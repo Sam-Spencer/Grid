@@ -6,7 +6,11 @@
 //  Copyright © 2020 Exyte. All rights reserved.
 //
 
+import Foundation
+
+#if os(iOS)
 import UIKit.UIApplication
+#endif
 
 private class ObjectWrapper {
     let value: Any
@@ -38,12 +42,14 @@ class Cache<KeyType: Hashable, ObjectType> {
     private let cache: NSCache<KeyWrapper<KeyType>, ObjectWrapper> = NSCache()
 
     init(lowMemoryAware: Bool = true) {
+        #if os(iOS)
         guard lowMemoryAware else { return }
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(onLowMemory),
             name: UIApplication.didReceiveMemoryWarningNotification,
             object: nil)
+        #endif
     }
 
     deinit {
